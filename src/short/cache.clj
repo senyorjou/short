@@ -10,9 +10,7 @@
   (let [index (wcar* (car/incr "index"))
         short-token (encode index)]
     (wcar* (car/set short-token {:url url}))
-    short-token
-    )
-  )
+    short-token))
 
 (defn get-entry [short]
   (wcar* (car/get short)))
