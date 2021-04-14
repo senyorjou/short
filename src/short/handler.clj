@@ -1,6 +1,5 @@
 (ns short.handler
-  (:require [clojure.java.io :as io]
-            [compojure.core :refer :all]
+  (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.util.response :refer [redirect]]
@@ -37,7 +36,7 @@
       (route/not-found "Not Found my friend"))))
 
 (defn get-short-url-info [short]
-  (println (str "Processing " req))
+  (println (str "Processing " short))
   (let [url (cache/get-entry short)]
     (if url
       (:url url)
@@ -54,4 +53,4 @@
   (route/not-found "Not Found"))
 
 (def app
-  (wrap-defaults app-routes (assoc-in site-defaults [:security :anti-forgery] false)))
+    (wrap-defaults app-routes (assoc-in site-defaults [:security :anti-forgery] false)))
