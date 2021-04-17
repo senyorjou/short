@@ -25,7 +25,8 @@
                          [:short :text :primary :key]]
                         {:conditional? true
                          :table-spec "WITHOUT ROWID"}))
-  ;; set index to last value by acquiring most recent short and storing counter value on index cache key
+  ;; set index to last value by acquiring most recent short
+  ;; and storing counter value on index cache key
   (if-let [last-id (:short (first (j/query db ["select short from urls order by timestamp desc limit 1"])))]
     (wcar* (car/set "index" (first (decode last-id))))))
 
@@ -42,8 +43,8 @@
   [long-url]
   (let [index (wcar* (car/incr "index"))
         short-url (encode index)]
-    (create-entry-in-cache long-url short-url)
-    (create-entry-in-db long-url short-url)
+    (future (create-entry-in-cache long-url short-url))
+    (future (create-entry-in-db long-url short-url))
     short-url))
 
 (defn get-entry-from-cache
@@ -51,7 +52,7 @@
   [short-url]
   (let [long-url (wcar* (car/get short-url))]
     (if long-url
-      (wcar* (car/expire short-url KEY-TTL)))
+      (future (wcar* (car/expire short-url KEY-TTL))))
     long-url))
 
 (defn get-entry

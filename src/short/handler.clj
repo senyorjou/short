@@ -14,12 +14,7 @@
 (defn is-valid-url? [url]
   (.isValid (UrlValidator. (into-array ["http" "https"])) url))
 
-(defn futurismo [url]
-  (Thread/sleep 2000)
-  (println (str "Saving URL: " url)))
-
 (defn display [url req]
-  (future (futurismo url))
   (let [addr (:remote-addr req)
         ua  (get (:headers req) "user-agent")]
     (str url " - " addr " - " ua)))
