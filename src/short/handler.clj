@@ -3,7 +3,7 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.util.response :refer [redirect]]
-            [short.cache :as cache]
+            [short.db :as db]
             [short.views :as views])
   (:import org.apache.commons.validator.routines.UrlValidator))
 
@@ -26,21 +26,21 @@
 
 (defn create [url]
   (if (is-valid-url? url)
-    (build-url (cache/create-entry url))
+    (build-url (db/create-entry url))
     (str "Url is NOT valid my friend")))
 
-(defn get-short-url [short]
-  (let [url (cache/get-entry short)]
-    (if url
-      (redirect (:url url) 302)
+(defn get-short-url [short-url]
+  (let [row (db/get-entry short-url)]
+    (if row
+      (redirect (:long row) 302)
       (route/not-found "Not Found my friend"))))
 
 (defn get-short-url-info [short]
   (println (str "Processing " short))
-  (let [url (cache/get-entry short)]
-    (if url
-      (:url url)
-      (str short " Is not found on database"))))
+  (let [row (db/get-entry short)]
+    (if row
+      (:long row)
+      (str short " Is rownot found on database"))))
 
 
 (defroutes app-routes
@@ -53,4 +53,6 @@
   (route/not-found "Not Found"))
 
 (def app
-    (wrap-defaults app-routes (assoc-in site-defaults [:security :anti-forgery] false)))
+  (do
+    (db/init-db)
+    (wrap-defaults app-routes (assoc-in site-defaults [:security :anti-forgery] false))))
