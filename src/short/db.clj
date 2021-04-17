@@ -40,10 +40,8 @@
 (defn create-entry
   "Create a cache and db entry for the long-url, returns short-url."
   [long-url]
-  (println (str "Received " long-url))
   (let [index (wcar* (car/incr "index"))
         short-url (encode index)]
-    (println (str "Index and short are " index " / " short-url))
     (create-entry-in-cache long-url short-url)
     (create-entry-in-db long-url short-url)
     short-url))
