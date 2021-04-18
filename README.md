@@ -1,6 +1,6 @@
 # short
 
-FIXME
+A simple url shortener with almost no dependencies
 
 ## Prerequisites
 

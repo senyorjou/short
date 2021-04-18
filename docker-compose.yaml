@@ -2,6 +2,19 @@ version: "3.2"
 services:
   redis:
     image: redis:6.2
-    command: redis-server --save "" --appendonly no
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
     ports:
-      - 6379:6379
+      - "6379:6379"
+  app:
+    build:
+      context: .
+    volumes:
+      - ./db/:/app/db/
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis

@@ -5,7 +5,10 @@
    [short.hasher :refer [decode encode]]))
 
 ;; Redis magic
-(def redis-conn {:pool {} :spec {:host "127.0.0.1" :port 6379}})
+(def REDIS-HOST
+  (or (System/getenv "REDIS_HOST")
+      "localhost"))
+(def redis-conn {:pool {} :spec {:host REDIS-HOST :port 6379}})
 (defmacro wcar* [& body] `(car/wcar redis-conn ~@body))
 
 (def KEY-TTL 3600)
