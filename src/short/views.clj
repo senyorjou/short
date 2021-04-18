@@ -46,4 +46,4 @@
      [:div {:class "container"}
       [:h1 "Shorten your URLs"]
       partial-form-url
-      partial-form-short-url]]))
+      ]]))
